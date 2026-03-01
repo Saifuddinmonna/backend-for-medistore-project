@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -25,5 +25,17 @@ app.use(morgan("dev"));
 app.get('/', (req, res) => {
   res.send('MediStore API is running perfectly! 🚀');
 });
+
+
+// 7️⃣ ❗ Error Handling Middleware (ALWAYS LAST)
+const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({
+    success: false,
+    message: err.message,
+  });
+};
+
+app.use(errorHandler);
 
 export default app;
