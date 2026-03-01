@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"], // It is added for using features like top-level await without needing to specify "ESNext" as the target, which can be more compatible with certain environments.
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    "strict": true,
+    "skipLibCheck": true,
+
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "types": ["node"],
+    "sourceMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "prisma"] // prisma ফোল্ডার এক্সক্লুড রাখা ভালো eti amar projecrt e prisma client generate korar por dist folder e generate hoye jai tai dist o exclude kora holo
+}
