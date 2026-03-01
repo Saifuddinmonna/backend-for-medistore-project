@@ -3,6 +3,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
+import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
 
 const app = express();
 
@@ -17,8 +19,10 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 
+// 6️⃣ Routes (👉 এখানেই routes বসবে)
 
-
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 
 // Basic Route for Testing
