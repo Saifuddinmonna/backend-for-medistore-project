@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
-//import medicineRoutes from './routes/medicine.routes.js';
+import medicineRoutes from './routes/medicine.routes.js';
 import orderRoutes from './routes/order.routes.js';
 
 const app = express();
@@ -24,7 +24,7 @@ app.use(morgan("dev"));
 // 6️⃣ Routes (👉 এখানেই routes বসবে)
 
 app.use('/api/auth', authRoutes);
-//app.use('/api/medicines', medicineRoutes);
+app.use('/api/medicines', medicineRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 
