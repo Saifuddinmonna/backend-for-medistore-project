@@ -1,0 +1,117 @@
+import prisma from '../utils/prisma.js';
+
+/**
+ * ১. সব ওষুধ দেখা (Public Feature)
+ * রিকোয়ারমেন্ট: Search and filter by category, price, manufacturer
+ */
+export const getAllMedicines = async (req: any, res: any) => {
+  const { search, category, minPrice, maxPrice, manufacturer } = req.query;
+
+  try {
+    const medicines = await prisma.medicine.findMany({
+      where: {
+        // সার্চ লজিক (নামে সার্চ)
+        name: { contains: search as string, mode: 'insensitive' },
+        
+        // ক্যাটাগরি ফিল্টার
+        category: category ? { name: category as string } : undefined,
+        
+        // ম্যানুফ্যাকচারার ফিল্টার
+        manufacturer: manufacturer ? { contains: manufacturer as string, mode: 'insensitive' } : undefined,
+        
+        // প্রাইস রেঞ্জ ফিল্টার
+        price: {
+          gte: minPrice ? parseFloat(minPrice as string) : 0,
+          lte: maxPrice ? parseFloat(maxPrice as string) : 999999,
+        },
+      },
+      include: { category: true, seller: { select: { name: true } } },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    res.json(medicines);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch medicines", error: err });
+  }
+};
+
+/**
+ * ২. একটি ওষুধের ডিটেইলস দেখা (Public Feature)
+ */
+export const getMedicineById = async (req: any, res: any) => {
+  const { id } = req.params;
+  try {
+    const medicine = await prisma.medicine.findUnique({
+      where: { id },
+      include: { category: true, seller: { select: { name: true } } }
+    });
+    if (!medicine) return res.status(404).json({ message: "Medicine not found" });
+    res.json(medicine);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching details" });
+  }
+};
+
+/**
+ * ৩. নতুন ওষুধ যোগ করা (Seller Feature)
+ * রিকোয়ারমেন্ট: Add medicines to inventory
+ */
+export const addMedicine = async (req: any, res: any) => {
+  const { name, description, price, stock, manufacturer, image, categoryId } = req.body;
+
+  try {
+    const medicine = await prisma.medicine.create({
+      data: {
+        name,
+        description,
+        price: parseFloat(price),
+        stock: parseInt(stock),
+        manufacturer,
+        image,
+        categoryId,
+        sellerId: req.user.id // যে সেলার লগইন করা তার আইডি
+      }
+    });
+    res.status(201).json({ message: "Medicine added successfully", medicine });
+  } catch (err) {
+    res.status(400).json({ message: "Failed to add medicine", error: err });
+  }
+};
+
+/**
+ * ৪. ওষুধ আপডেট করা (Seller Feature)
+ * রিকোয়ারমেন্ট: Edit medicines and Manage stock levels
+ */
+export const updateMedicine = async (req: any, res: any) => {
+  const { id } = req.params;
+  const { name, description, price, stock, manufacturer, image } = req.body;
+
+  try {
+    // চেক করা হচ্ছে এই ওষুধটি এই সেলারেরই কি না (Security)
+    const existing = await prisma.medicine.findUnique({ where: { id } });
+    if (!existing || existing.sellerId !== req.user.id) {
+      return res.status(403).json({ message: "You can only edit your own medicines" });
+    }
+
+    const updated = await prisma.medicine.update({
+      where: { id },
+      data: { name, description, price, stock, manufacturer, image }
+    });
+    res.json({ message: "Medicine updated", updated });
+  } catch (err) {
+    res.status(400).json({ message: "Update failed" });
+  }
+};
+
+/**
+ * ৫. ওষুধ রিমুভ করা (Seller Feature)
+ */
+export const deleteMedicine = async (req: any, res: any) => {
+  const { id } = req.params;
+  try {
+    await prisma.medicine.delete({ where: { id } });
+    res.json({ message: "Medicine deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ message: "Delete failed" });
+  }
+};
