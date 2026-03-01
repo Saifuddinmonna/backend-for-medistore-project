@@ -36,6 +36,7 @@ app.get('/', (req, res) => {
 
 
 // 7️⃣ ❗ Error Handling Middleware (ALWAYS LAST)
+
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err);
   res.status(500).json({
