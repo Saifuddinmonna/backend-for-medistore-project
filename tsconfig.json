@@ -4,6 +4,7 @@
     "lib": ["ES2022"], // It is added for using features like top-level await without needing to specify "ESNext" as the target, which can be more compatible with certain environments.
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    
 
     "rootDir": "./src",
     "outDir": "./dist",
@@ -16,6 +17,7 @@
 
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
+     "ignoreDeprecations": "6.0",
 
     "types": ["node"],
     "sourceMap": true

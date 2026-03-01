@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client"
@@ -11,4 +8,72 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ১. ইউজার মডেল (Customer, Seller, Admin)
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
+  status    UserStatus @default(ACTIVE)
+  address   String?
+  medicines Medicine[] // শুধুমাত্র Seller দের জন্য
+  orders    Order[]    // শুধুমাত্র Customer দের জন্য
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+// ২. ক্যাটাগরি মডেল
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  medicines Medicine[]
+}
+
+// ৩. মেডিসিন মডেল
+model Medicine {
+  id           String   @id @default(uuid())
+  name         String
+  description  String
+  price        Float
+  stock        Int
+  manufacturer String
+  image        String
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+  sellerId     String
+  seller       User     @relation(fields: [sellerId], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+// ৪. অর্ডার মডেল
+model Order {
+  id              String      @id @default(uuid())
+  customerId      String
+  customer        User        @relation(fields: [customerId], references: [id])
+  items           Json        // অর্ডারের আইটেমগুলো এখানে সেভ থাকবে
+  totalAmount     Float
+  shippingAddress String
+  status          OrderStatus @default(PLACED)
+  createdAt       DateTime    @default(now())
+}
+
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }
