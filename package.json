@@ -9,10 +9,10 @@
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "node --loader ts-node/esm prisma/seed.ts"
+    "prisma:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
-    "seed": "node --loader ts-node/esm prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "engines": {
     "node": ">=24.12.0"
