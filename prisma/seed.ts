@@ -1,4 +1,4 @@
-import { PrismaClient } from '../src/generated/client/client.js';
+import { PrismaClient, Role, UserStatus } from '../src/generated/client/client.js';
 import bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
 import { Pool } from 'pg';
@@ -25,8 +25,8 @@ async function main() {
       name: 'Super Admin',
       email: 'admin@medistore.com',
       password: adminPassword,
-      role: 'ADMIN',
-      status: 'ACTIVE',
+      role: Role.Admin,
+      status: UserStatus.ACTIVE,
     },
   });
 
@@ -61,8 +61,8 @@ async function main() {
       name: 'Pharmacy One',
       email: 'seller@medistore.com',
       password: sellerPassword,
-      role: 'SELLER',
-      status: 'ACTIVE',
+      role: Role.Seller,
+      status: UserStatus.ACTIVE,
     },
   });
 

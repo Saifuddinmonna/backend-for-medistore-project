@@ -7,8 +7,8 @@ import { generateToken } from '../utils/jwt.js'; // হেল্পার ইম
 
   export const register = async (req: Request, res: Response) => {
   // default to a normal user if the client doesn't supply one
-  let { name, email, password, role = 'Seller || User' } = req.body;
-  role = role.toUpperCase(); // Ensure role is uppercase (e.g., 'Admin' -> 'ADMIN')
+  let { name, email, password, role = 'Customer' } = req.body;
+  role = role[0].toUpperCase() + role.slice(1).toLowerCase(); // Ensure role is uppercase (e.g., 'Admin' -> 'ADMIN')
 
   try {
     // optional: check for duplicate beforehand so we can give a nicer message

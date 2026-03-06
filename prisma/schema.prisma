@@ -17,7 +17,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      Role     @default(CUSTOMER)
+  role      Role     @default(Customer)
   status    UserStatus @default(ACTIVE)
   address   String?
   medicines Medicine[] // শুধুমাত্র Seller দের জন্য
@@ -26,9 +26,9 @@ model User {
 }
 
 enum Role {
-  CUSTOMER
-  SELLER
-  ADMIN
+  Customer
+  Seller
+  Admin
 }
 
 enum UserStatus {

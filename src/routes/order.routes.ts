@@ -4,9 +4,9 @@ import { verifyToken, authorize } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-router.post('/', verifyToken, authorize('CUSTOMER'), createOrder);
-router.get('/my-orders', verifyToken, authorize('CUSTOMER'), getMyOrders);
-router.get('/all', verifyToken, authorize('SELLER', 'ADMIN'), getAllOrders);
-router.patch('/:id/status', verifyToken, authorize('SELLER', 'ADMIN'), updateOrderStatus);
+router.post('/', verifyToken, authorize('Customer'), createOrder);
+router.get('/my-orders', verifyToken, authorize('Customer'), getMyOrders);
+router.get('/all', verifyToken, authorize('Seller', 'Admin'), getAllOrders);
+router.patch('/:id/status', verifyToken, authorize('Seller', 'Admin'), updateOrderStatus);
 
 export default router;

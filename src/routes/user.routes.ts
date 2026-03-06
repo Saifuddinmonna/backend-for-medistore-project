@@ -4,7 +4,7 @@ import { verifyToken, authorize } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-router.get('/', verifyToken, authorize('ADMIN'), getAllUsers);
-router.patch('/:id/status', verifyToken, authorize('ADMIN'), toggleUserStatus);
+router.get('/', verifyToken, authorize('Admin'), getAllUsers);
+router.patch('/:id/status', verifyToken, authorize('Admin'), toggleUserStatus);
 
 export default router;

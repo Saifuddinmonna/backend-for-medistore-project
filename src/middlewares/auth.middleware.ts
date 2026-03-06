@@ -20,6 +20,7 @@ export const verifyToken = (req: any, res: any, next: any) => {
 };
 
 export const authorize = (...roles: string[]) => {
+  console.log('req.user.role', roles);
   return (req: any, res: any, next: any) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: `Access Denied: Only ${roles.join(' or ')} can access this.` });

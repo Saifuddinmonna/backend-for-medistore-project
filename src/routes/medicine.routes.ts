@@ -15,8 +15,8 @@ router.get('/', getAllMedicines);
 router.get('/:id', getMedicineById);
 
 // প্রাইভেট রাউটস (শুধুমাত্র সেলার বা এডমিন)
-router.post('/', verifyToken, authorize('SELLER', 'ADMIN'), addMedicine);
-router.put('/:id', verifyToken, authorize('SELLER', 'ADMIN'), updateMedicine);
-router.delete('/:id', verifyToken, authorize('SELLER', 'ADMIN'), deleteMedicine);
+router.post('/', verifyToken, authorize('Seller', 'Admin'), addMedicine);
+router.put('/:id', verifyToken, authorize('Seller', 'Admin'), updateMedicine);
+router.delete('/:id', verifyToken, authorize('Seller', 'Admin'), deleteMedicine);
 
 export default router;
