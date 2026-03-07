@@ -36,3 +36,15 @@ export const updateOrderStatus = async (req: any, res: any, next: any) => {
     next(error);
   }
 };
+// সেলারের নিজের ওষুধের লিস্ট দেখা (/api/seller/medicines)
+export const getSellerMedicines = async (req: any, res: any, next: any) => {
+  try {
+    const medicines = await prisma.medicine.findMany({
+      where: { sellerId: req.user.id },
+      include: { category: true }
+    });
+    res.json(medicines);
+  } catch (error) {
+    next(error);
+  }
+};

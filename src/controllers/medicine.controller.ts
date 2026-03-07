@@ -115,3 +115,62 @@ export const deleteMedicine = async (req: any, res: any) => {
     res.status(400).json({ message: "Delete failed" });
   }
 };
+
+/**
+ * ১. ওষুধের ওপর রিভিউ এবং রেটিং দেওয়া (Customer Feature)
+ * রিকোয়ারমেন্ট: Leave reviews after ordering
+ */
+export const createReview = async (req: any, res: any, next: any) => {
+  try {
+    const { rating, comment } = req.body;
+    const { medicineId } = req.params;
+
+    // রেটিং এবং কমেন্ট আছে কি না চেক করা
+    if (!rating || !comment) {
+      return res.status(400).json({ success: false, message: "Rating and comment are required" });
+    }
+
+    // ডাটাবেসে রিভিউ তৈরি করা
+    const review = await prisma.review.create({
+      data: {
+        rating: parseInt(rating), // রেটিং নাম্বার হিসেবে সেভ হবে
+        comment,
+        medicineId,
+        userId: req.user.id // যে কাস্টমার লগইন করা তার আইডি
+      }
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Thank you for your review!",
+      review
+    });
+  } catch (error) {
+    // কোনো এরর হলে গ্লোবাল এরর হ্যান্ডলারে পাঠিয়ে দিবে
+    next(error);
+  }
+};
+
+/**
+ * ২. একটি নির্দিষ্ট ওষুধের সব রিভিউ দেখা (Public Feature)
+ * কাস্টমাররা মেডিসিন ডিটেইলস পেজে এটি দেখতে পাবে।
+ */
+export const getMedicineReviews = async (req: any, res: any, next: any) => {
+  try {
+    const { medicineId } = req.params;
+
+    const reviews = await prisma.review.findMany({
+      where: { medicineId },
+      include: {
+        user: {
+          select: { name: true } // শুধুমাত্র কাস্টমারের নাম দেখাবে (সিকিউরিটির জন্য)
+        }
+      },
+      orderBy: { createdAt: 'desc' } // নতুন রিভিউ আগে দেখাবে
+    });
+
+    res.json(reviews);
+  } catch (error) {
+    next(error);
+  }
+};
