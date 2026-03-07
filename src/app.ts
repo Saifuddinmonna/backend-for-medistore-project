@@ -4,10 +4,11 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import authRoutes from './routes/auth.routes.js';
-import userRoutes from './routes/user.routes.js';
 import medicineRoutes from './routes/medicine.routes.js';
 import orderRoutes from './routes/order.routes.js';
 import categoryRoutes from './routes/category.routes.js';
+import sellerRoutes from './routes/seller.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
@@ -27,8 +28,9 @@ app.use(morgan("dev"));
 app.use('/api/auth', authRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/seller', sellerRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 // Basic Route for Testing

@@ -22,6 +22,7 @@ model User {
   address   String?
   medicines Medicine[] // শুধুমাত্র Seller দের জন্য
   orders    Order[]    // শুধুমাত্র Customer দের জন্য
+  reviews   Review[]
   createdAt DateTime @default(now())
 }
 
@@ -56,6 +57,7 @@ model Medicine {
   category     Category @relation(fields: [categoryId], references: [id])
   sellerId     String
   seller       User     @relation(fields: [sellerId], references: [id])
+  reviews      Review[]
   createdAt    DateTime @default(now())
 }
 
@@ -77,4 +79,16 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+// prisma/schema.prisma
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String
+  medicine  Medicine @relation(fields: [medicineId], references: [id])
+  medicineId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
