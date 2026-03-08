@@ -52,7 +52,8 @@ model Medicine {
   price        Float
   stock        Int
   manufacturer String
-  image        String
+  // image is now optional; sellers can create a medicine without uploading one
+  image        String? @default("https://via.placeholder.com/150")
   categoryId   String
   category     Category @relation(fields: [categoryId], references: [id])
   sellerId     String

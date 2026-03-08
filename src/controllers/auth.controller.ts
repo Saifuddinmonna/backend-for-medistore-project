@@ -45,10 +45,18 @@ export const login = async (req: any, res: any) => {
   try {
     const user = await prisma.user.findUnique({ where: { email } });
 
+
     // পাসওয়ার্ড চেক
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
+    // লগইন ফাংশনের ভেতরে (পাসওয়ার্ড চেক করার ঠিক পরে):
+if (user.status === 'BANNED') {
+  return res.status(403).json({ 
+    success: false, 
+    message: "Your account has been banned. Please contact the administrator." 
+  });
+}
 
     // হেল্পার ফাংশন ব্যবহার করে টোকেন তৈরি
     const token = generateToken({ id: user.id, role: user.role });

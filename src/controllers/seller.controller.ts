@@ -3,10 +3,54 @@ import prisma from '../utils/prisma.js';
 // ১. সেলার নতুন ওষুধ যোগ করবে
 export const sellerAddMedicine = async (req: any, res: any, next: any) => {
   try {
+    // pick only the fields we want to allow and validate required ones
+    const {
+      name,
+      manufacturer,
+      price,
+      stock,
+      categoryId,
+      description,
+      image
+    } = req.body;
+
+    // simple presence checks for required fields (image is optional now)
+    if (
+      !name ||
+      !manufacturer ||
+      price === undefined ||
+      stock === undefined ||
+      !categoryId ||
+      !description
+    ) {
+      return res.status(400).json({
+        error: "Missing required medicine data. Please provide all fields except image (ইমেজ ছাড়া সমস্ত তথ্য দিন)।"
+      });
+    }
+
+    // accept only non-empty strings for image; ignore anything else
+    const imageProvided = typeof image === 'string' && image.trim() !== '';
+
     const medicine = await prisma.medicine.create({
-      data: { ...req.body, sellerId: req.user.id }
+      data: {
+        name,
+        manufacturer,
+        price: Number(price),
+        stock: Number(stock),
+        categoryId,
+        description,
+        // if imageProvided is false we pass undefined so Prisma omits it
+        image: imageProvided ? image : undefined,
+        sellerId: req.user.id
+      }
     });
-    res.status(201).json({ message: "Medicine added to inventory", medicine });
+
+    const baseMessage = "Medicine added to inventory";
+    const note = imageProvided
+      ? ''
+      : ' (ইমেজ আপলোড করা হয়নি / image not uploaded)';
+
+    res.status(201).json({ message: baseMessage + note, medicine });
   } catch (error) {
     next(error);
   }
